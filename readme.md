@@ -21,7 +21,7 @@
 ⚙️ چطوری اجراش کنم؟
 ۱. ریپو رو بگیر 😎
 git clone https://github.com/<mahkzmi>/tiny-url-shortener.git
-cd tinyurl
+cd url-shortener
 
 ۲. محیط مجازی بساز و پکیج‌ها رو نصب کن
 python -m venv env
