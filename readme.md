@@ -17,23 +17,6 @@
 
 یه داشبورد ساده و خوشگل و مینیمال هم داره برای دیدن لینک‌ها
 
-🧩 ساختار پروژه
-tiny-url-shortener/
-│
-├── app/
-│   ├── main.py              # اپ اصلی FastAPI
-│   ├── crud.py              # توابع کار با دیتابیس (CRUD)
-│   ├── database.py          # تنظیمات دیتابیس و Session
-│   ├── models.py            # مدل‌های SQLModel
-│   ├── schemas.py           # اسکیمای API
-│   ├── utils.py             # توابع کمکی (مثل تولید کد کوتاه)
-│   └── __init__.py
-│
-├── templates/
-│   └── dashboard.html       # داشبورد برای دیدن لینک‌ها
-│
-├── requirements.txt
-└── README.md
 
 ⚙️ چطوری اجراش کنم؟
 ۱. ریپو رو بگیر 😎
