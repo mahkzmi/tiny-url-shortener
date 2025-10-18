@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiny URL Dashboard</title>
+    <style>
+        /* Base Styles */
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #242424;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --accent: #3a86ff;
+            --accent-hover: #2a76ef;
+            --border: #333333;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 4px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-full {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Links Section */
+        .links-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            width: 300px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            width: 100%;
+            padding: 0.5rem 0;
+        }
+
+        .search-box input:focus {
+            box-shadow: none;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--bg-secondary);
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .code {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .url {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .url a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .url a:hover {
+            text-decoration: underline;
+        }
+
+        .clicks {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .date {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state p {
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 12L10 8V11H2V13H10V16L14 12Z" fill="white"/>
+                        <path d="M19 3H12C11.7348 3 11.4804 3.10536 11.2929 3.29289C11.1054 3.48043 11 3.73478 11 4V6H13V5H19V19H13V18H11V20C11 20.2652 11.1054 20.5196 11.2929 20.7071C11.4804 20.8946 11.7348 21 12 21H19C19.2652 21 19.5196 20.8946 19.7071 20.7071C19.8946 20.5196 20 20.2652 20 20V4C20 3.73478 19.8946 3.48043 19.7071 3.29289C19.5196 3.10536 19.2652 3 19 3Z" fill="white"/>
+                    </svg>
+                </div>
+                <h1>Tiny URL Dashboard</h1>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">{{ total_links }}</div>
+                    <div class="stat-label">Total Links</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">{{ total_clicks }}</div>
+                    <div class="stat-label">Total Clicks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Link Form -->
+        <div class="form-section">
+            <h2 class="section-title">Create New Short Link</h2>
+            <form action="/dashboard" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="target_url">Original URL</label>
+                        <input type="url" id="target_url" name="target_url" placeholder="https://example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_code">Custom Code (optional)</label>
+                        <input type="text" id="custom_code" name="custom_code" placeholder="my-link">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Title (optional)</label>
+                        <input type="text" id="title" name="title" placeholder="My Example Link">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-full">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4C11.4477 4 11 4.44772 11 5V11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H11V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V13H19C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11H13V5C13 4.44772 12.5523 4 12 4Z" fill="currentColor"/>
+                    </svg>
+                    Create Short Link
+                </button>
+            </form>
+        </div>
+
+        <!-- Links Table -->
+        <div class="links-section">
+            <div class="section-header">
+                <h2 class="section-title">All Links</h2>
+                <div class="search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="#a0a0a0"/>
+                    </svg>
+                    <input type="text" placeholder="Search links...">
+                </div>
+            </div>
+
+            {% if links %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Target URL</th>
+                            <th>Clicks</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for link in links %}
+                        <tr>
+                            <td><span class="code">{{ link.code }}</span></td>
+                            <td class="url">
+                                <a href="{{ link.target_url }}" target="_blank">{{ link.target_url }}</a>
+                            </td>
+                            <td class="clicks">{{ link.click_count }}</td>
+                            <td class="date">{{ link.created_at }}</td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn" title="Copy">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn" title="Delete">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z" fill="currentColor"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No links found. Create your first short URL above.</p>
+                <button class="btn">Create Your First Link</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Simple search functionality
+        document.querySelector('.search-box input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('.action-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const code = row.querySelector('.code').textContent;
+                
+                alert(`Copied: ${window.location.origin}/${code}`);
+            });
+        });
+    </script>
+</body>
+</html>
